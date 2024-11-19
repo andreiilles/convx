@@ -1,2 +1,2 @@
 # convx
-convx - img conversion &amp; 
+convx - img conversion &amp; file compression service
