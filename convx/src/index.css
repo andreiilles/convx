@@ -3,6 +3,11 @@ body {
   font-family: 'Roboto', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background-color: #121212;  /* Spotify-like dark gray */
+  color: white; /* To make the text readable */
 }
 
 code {

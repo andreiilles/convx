@@ -12,6 +12,7 @@ function Navbar({ user, onLogout, handleLoginSuccess, handleLoginError }) {
           <Button color="inherit" component={Link} to="/">Home</Button>
           <Button color="inherit" component={Link} to="/image-conversion">Image Conversion</Button>
           <Button color="inherit" component={Link} to="/file-compressor">File Compressor</Button>
+          <Button color="inherit" component={Link} to="/subscriptions">Subscriptions</Button>
         </div>
         {/* Google Login Button */}
         <div style={{ display: 'flex', alignItems: 'center' }}>

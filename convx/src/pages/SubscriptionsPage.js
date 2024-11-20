@@ -2,34 +2,34 @@ import React from 'react';
 import { Card, CardContent, Button, Typography, Box } from '@mui/material';
 import PageWithCardBackground from '../components/BackgroundCard'; // Adjust the path if needed
 
-const FileCompressorPage = () => {
+const SubscriptionPage = () => {
   return (
     <PageWithCardBackground>
       <Box sx={styles.container}>
         {/* Card 1 */}
         <Card sx={styles.card}>
           <CardContent sx={styles.cardContent}>
-            <Typography variant="h6">Basic Compression</Typography>
-            <Typography variant="body2" sx={styles.price}>Small File Sizes</Typography>
-            <Button sx={styles.button}>Compress</Button>
+            <Typography variant="h6">Basic Plan</Typography>
+            <Typography variant="body2" sx={styles.price}>$5/month</Typography>
+            <Button sx={styles.button}>Subscribe</Button>
           </CardContent>
         </Card>
 
         {/* Card 2 */}
         <Card sx={styles.card}>
           <CardContent sx={styles.cardContent}>
-            <Typography variant="h6">Standard Compression</Typography>
-            <Typography variant="body2" sx={styles.price}>Medium File Sizes</Typography>
-            <Button sx={styles.button}>Compress</Button>
+            <Typography variant="h6">Standard Plan</Typography>
+            <Typography variant="body2" sx={styles.price}>$10/month</Typography>
+            <Button sx={styles.button}>Subscribe</Button>
           </CardContent>
         </Card>
 
         {/* Card 3 */}
         <Card sx={styles.card}>
           <CardContent sx={styles.cardContent}>
-            <Typography variant="h6">High Compression</Typography>
-            <Typography variant="body2" sx={styles.price}>Large File Sizes</Typography>
-            <Button sx={styles.button}>Compress</Button>
+            <Typography variant="h6">Premium Plan</Typography>
+            <Typography variant="body2" sx={styles.price}>$15/month</Typography>
+            <Button sx={styles.button}>Subscribe</Button>
           </CardContent>
         </Card>
       </Box>
@@ -85,4 +85,4 @@ const styles = {
   },
 };
 
-export default FileCompressorPage;
+export default SubscriptionPage;

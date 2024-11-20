@@ -1,11 +1,18 @@
 import React from 'react';
+import { Typography } from '@mui/material';
+import PageWithCardBackground from '../components/BackgroundCard'; // Adjust the import path
 
-function MainPage({ user, onLogout, handleLoginSuccess, handleLoginError }) {
+function HomePage() {
   return (
-    <div>
-        {/* MainPage content */}
-    </div>
+    <PageWithCardBackground>
+      <Typography variant="h4" align="center" sx={{ color: '#fff' }}>
+        Welcome to the Platform!
+      </Typography>
+      <Typography variant="h6" align="center" sx={{ color: '#bbb', marginTop: 2 }}>
+        Your go-to place for all your file conversions and compressions.
+      </Typography>
+    </PageWithCardBackground>
   );
 }
 
-export default MainPage;
+export default HomePage;
