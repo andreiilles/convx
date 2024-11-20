@@ -1,7 +1,8 @@
 import React from 'react';
 import { Box, Card, CardContent } from '@mui/material';
+import AdCard from './AdCard';
 
-const PageWithCardBackground = ({ children }) => {
+const BackgroundCard = ({ children }) => {
   return (
     <Box
       sx={{
@@ -9,9 +10,11 @@ const PageWithCardBackground = ({ children }) => {
         justifyContent: 'center',
         alignItems: 'center',
         height: '100vh',
-        backgroundColor: '#121212', // Dark background for contrast
+        backgroundColor: '#121212',
+        position: 'relative',
       }}
     >
+      <AdCard position="left" />
       <Card
         sx={{
           width: '80%',
@@ -22,13 +25,14 @@ const PageWithCardBackground = ({ children }) => {
           justifyContent: 'center',
           boxShadow: 6,
           borderRadius: 3,
-          backgroundColor: '#1E1E1E', // Dark gray for card background
+          backgroundColor: '#1E1E1E',
         }}
       >
         <CardContent>{children}</CardContent>
       </Card>
+      <AdCard position="right" />
     </Box>
   );
 };
 
-export default PageWithCardBackground;
+export default BackgroundCard;

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import jwt_decode from 'jwt-decode';
 import Navbar from './components/Navbar';
@@ -9,6 +9,16 @@ import FileCompressorPage from './pages/FileCompressorPage';
 import SubscriptionsPage from './pages/SubscriptionsPage';
 import { ThemeProvider } from '@mui/material';
 import spotifyTheme from './styles/theme';
+import AdCard from './components/AdCard'; 
+
+function ScrollToTop() {
+  const location = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location]);
+
+  return null;
+}
 
 function App() {
   const [user, setUser] = useState(null);
@@ -38,8 +48,10 @@ function App() {
 
   return (
     <ThemeProvider theme={spotifyTheme}>
-      <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
+      <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+                           locale="en">
         <Router>
+          <ScrollToTop />
           <div>
             <Navbar user={user} onLogout={handleLogout} handleLoginSuccess={handleLoginSuccess} handleLoginError={handleLoginError} />
             <Routes>
@@ -48,6 +60,8 @@ function App() {
               <Route path="/file-compressor" element={<FileCompressorPage user={user} onLogout={handleLogout} handleLoginSuccess={handleLoginSuccess} handleLoginError={handleLoginError} />} />
               <Route path="/subscriptions" element={<SubscriptionsPage />} />
             </Routes>
+            <AdCard position="left" />
+            <AdCard position="right" />
           </div>
         </Router>
       </GoogleOAuthProvider>

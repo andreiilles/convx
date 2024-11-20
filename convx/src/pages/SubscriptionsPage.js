@@ -10,7 +10,7 @@ const SubscriptionPage = () => {
         <Card sx={styles.card}>
           <CardContent sx={styles.cardContent}>
             <Typography variant="h6">Basic Plan</Typography>
-            <Typography variant="body2" sx={styles.price}>$5/month</Typography>
+            <Typography variant="body2" sx={styles.price}>2.99€/month</Typography>
             <Button sx={styles.button}>Subscribe</Button>
           </CardContent>
         </Card>
@@ -19,7 +19,7 @@ const SubscriptionPage = () => {
         <Card sx={styles.card}>
           <CardContent sx={styles.cardContent}>
             <Typography variant="h6">Standard Plan</Typography>
-            <Typography variant="body2" sx={styles.price}>$10/month</Typography>
+            <Typography variant="body2" sx={styles.price}>4.99€/month</Typography>
             <Button sx={styles.button}>Subscribe</Button>
           </CardContent>
         </Card>
@@ -28,7 +28,7 @@ const SubscriptionPage = () => {
         <Card sx={styles.card}>
           <CardContent sx={styles.cardContent}>
             <Typography variant="h6">Premium Plan</Typography>
-            <Typography variant="body2" sx={styles.price}>$15/month</Typography>
+            <Typography variant="body2" sx={styles.price}>8.99€/month</Typography>
             <Button sx={styles.button}>Subscribe</Button>
           </CardContent>
         </Card>
