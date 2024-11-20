@@ -6,10 +6,10 @@ function HomePage() {
   return (
     <PageWithCardBackground>
       <Typography variant="h4" align="center" sx={{ color: '#fff' }}>
-        Welcome to the Platform!
+        Welcome to convX
       </Typography>
       <Typography variant="h6" align="center" sx={{ color: '#bbb', marginTop: 2 }}>
-        Your go-to place for all your file conversions and compressions.
+        convX is an all-in-one tool for image conversion and file compression
       </Typography>
     </PageWithCardBackground>
   );
