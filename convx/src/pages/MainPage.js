@@ -9,7 +9,7 @@ function HomePage() {
         Welcome to convX
       </Typography>
       <Typography variant="h6" align="center" sx={{ color: '#bbb', marginTop: 2 }}>
-        convX is an all-in-one tool for image conversion and file compression
+        convX is an all-in-one tool for image and file conversion and compression
       </Typography>
     </PageWithCardBackground>
   );

@@ -14,7 +14,11 @@ const BackgroundCard = ({ children }) => {
         position: 'relative',
       }}
     >
-      <AdCard position="left" />
+      <Box sx={{ display: 'flex', flexDirection: 'column', position: 'absolute', left: 0, top: '50%', transform: 'translateY(-50%)' }}>
+        {[...Array(2)].map((_, index) => (
+          <AdCard key={`left-${index}`} position="left" />
+        ))}
+      </Box>
       <Card
         sx={{
           width: '80%',
@@ -30,7 +34,11 @@ const BackgroundCard = ({ children }) => {
       >
         <CardContent>{children}</CardContent>
       </Card>
-      <AdCard position="right" />
+      <Box sx={{ display: 'flex', flexDirection: 'column', position: 'absolute', right: 0, top: '50%', transform: 'translateY(-50%)' }}>
+        {[...Array(2)].map((_, index) => (
+          <AdCard key={`right-${index}`} position="right" />
+        ))}
+      </Box>
     </Box>
   );
 };

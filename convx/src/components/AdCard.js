@@ -37,8 +37,6 @@ const AdCardsPage = () => {
       }}
     >
       <AdCard />
-      <AdCard />
-      <AdCard />
     </Box>
   );
 };

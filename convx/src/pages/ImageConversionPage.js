@@ -1,16 +1,62 @@
 import React, { useState } from 'react';
-import { Card, CardContent, Typography, Box, Button, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { useDropzone } from 'react-dropzone';
-import BackgroundCard from '../components/BackgroundCard';
+import { Box, Card, CardContent, Typography, FormControl, InputLabel, Select, MenuItem, Button } from '@mui/material';
+import BackgroundCard from '../components/BackgroundCard'; // Assuming you have this component
+import { jsPDF } from 'jspdf';
+import { saveAs } from 'file-saver';
+import { PDFDocument } from 'pdf-lib';
+import mammoth from 'mammoth';
+import PptxGenJS from 'pptxgenjs';
+import * as pdfjsLib from 'pdfjs-dist/webpack';
 
-const ImageConversionPage = () => {
-  const [image, setImage] = useState(null);
+pdfjsLib.GlobalWorkerOptions.workerSrc = `${process.env.PUBLIC_URL}/pdf.worker.js`;
+
+function ImageConversionPage() {
+  const [file, setFile] = useState(null);
+  const [fileType, setFileType] = useState('');
   const [format, setFormat] = useState('');
+  const [fileContent, setFileContent] = useState('');
+  const [fileName, setFileName] = useState('');
+
+  const formatOptions = {
+    image: ['png', 'jpeg', 'webp'],
+    text: ['pdf', 'word'],
+    word: ['docx', 'pdf'],
+    pptx: ['pptx', 'pdf'],
+    pdf: ['docx', 'pptx' , 'txt'], 
+  };
+
   const { getRootProps, getInputProps } = useDropzone({
-    accept: 'image/*',
+    accept: 'image/*,text/*,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.presentationml.presentation', // Add more file types here
     onDrop: (acceptedFiles) => {
       const file = acceptedFiles[0];
-      setImage(URL.createObjectURL(file));
+      if (file) {
+        const fileType = file.type.split('/')[0];
+        setFileType(fileType);
+        setFormat(formatOptions[fileType] ? formatOptions[fileType][0] : ''); // Set default format for the file type
+        setFileName(file.name);
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          if (fileType === 'text') {
+            setFileContent(reader.result);
+          } else if (file.name.endsWith('.pdf')) {
+
+            setFileContent(reader.result);
+            setFileType('pdf');
+          } else {
+            setFile(reader.result);
+          }
+        };
+        if (fileType === 'text') {
+          reader.readAsText(file);
+        } else if (fileType === 'application' && file.name.endsWith('.pdf')) {
+          reader.readAsArrayBuffer(file);
+        } else {
+          reader.readAsDataURL(file);
+        }
+      } else {
+        alert('Please upload a valid file.');
+      }
     },
   });
 
@@ -18,12 +64,68 @@ const ImageConversionPage = () => {
     setFormat(event.target.value);
   };
 
-  const handleConvert = () => {
-    if (image && format) {
-      console.log(`Converting image to ${format}`);
-    } else {
-      alert('Please upload an image and select a format.');
+  const handleConvert = async () => {
+    if (fileType === 'image') {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      img.src = file;
+      img.onload = () => {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+        const convertedImage = canvas.toDataURL(`image/${format}`);
+        const link = document.createElement('a');
+        link.href = convertedImage;
+        link.download = `converted_image.${format}`;
+        link.click();
+      };
+    } else if (fileType === 'text') {
+      if (format === 'pdf') {
+        const doc = new jsPDF();
+        doc.text(fileContent, 10, 10);
+        doc.save('converted_text.pdf');
+      } else {
+        const blob = new Blob([fileContent], { type: `text/${format}` });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `converted_text.${format}`;
+        link.click();
+      }
+    } else if (fileType === 'application' && fileName.endsWith('.pdf')) {
+      const pdfDoc = await PDFDocument.load(fileContent);
+      pdfDoc.save('converted.pdf');
+    } else if (fileType === 'pdf') {
+      const pdfDoc = await PDFDocument.load(fileContent);
+      let convertedBytes;
+      if (format === 'docx') {
+         const blob = new Blob([textContent], { type: 'application/msword;charset=utf-8' });
+          saveAs(blob, 'converted.doc');
+      }
+       else if (format === 'pptx') {
+        const pptx = new PptxGenJS();
+        pptx.addSlide().addText(await extractTextFromPDF(pdfDoc), { x: 1, y: 1, fontSize: 18 });
+        convertedBytes = await pptx.write('blob');
+      } else if (format === 'txt') {
+        const textContent = await extractTextFromPDF(pdfDoc);
+        convertedBytes = new Blob([textContent], { type: 'text/plain' });
+      }
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(convertedBytes);
+      link.download = `converted_file.${format}`;
+      link.click();
     }
+  };
+
+  const extractTextFromPDF = async (pdfDoc) => {
+    const pdf = await pdfjsLib.getDocument({ data: fileContent }).promise;
+    let textContent = '';
+    for (let i = 0; i < pdf.numPages; i++) {
+      const page = await pdf.getPage(i + 1);
+      const text = await page.getTextContent();
+      textContent += text.items.map(item => item.str).join(' ') + '\n';
+    }
+    return textContent;
   };
 
   return (
@@ -32,45 +134,63 @@ const ImageConversionPage = () => {
         <Card sx={styles.imageCard} {...getRootProps()}>
           <input {...getInputProps()} />
           <CardContent sx={styles.cardContent}>
-            {image ? (
+            {file || fileContent ? (
               <Box sx={styles.previewContainer}>
-                <img src={image} alt="Preview" style={styles.previewImage} />
+                {fileType === 'image' ? (
+                  <img src={file} alt="Preview" style={styles.previewImage} />
+                ) : (
+                  <Typography variant="body2" sx={styles.instructions}>
+                    File uploaded: {fileName}
+                  </Typography>
+                )}
               </Box>
             ) : (
               <Typography variant="body2" sx={styles.instructions}>
-                Drop an image here or click to select one.
+                Drop a file here or click to select one.
               </Typography>
             )}
           </CardContent>
         </Card>
         <Card sx={styles.convertCard}>
           <CardContent sx={styles.cardContent}>
-            {image && (
+            {file || fileContent ? (
               <>
-                <FormControl fullWidth sx={styles.formControl}>
-                  <InputLabel>Format</InputLabel>
+                <FormControl fullWidth sx={{ ...styles.formControl }}>
+                  <InputLabel shrink style={{ color: '#fff', fontSize: '1.2rem', textAlign: 'center', width: '100%' }}>
+                    Convert to :
+                  </InputLabel>
+                  <br></br>
                   <Select
                     value={format}
                     onChange={handleFormatChange}
-                    label="Format"
-                    sx={styles.select}
+                    sx={{ ...styles.select, color: '#1E1E1E', textAlign: 'center', width: '100%' }}
+                    MenuProps={{
+                      PaperProps: {
+                        sx: {
+                          backgroundColor: '#1E1E1E',
+                          color: '#fff',
+                        },
+                      },
+                    }}
                   >
-                    <MenuItem value="png">PNG</MenuItem>
-                    <MenuItem value="jpeg">JPEG</MenuItem>
-                    <MenuItem value="webp">WEBP</MenuItem>
+                    {formatOptions[fileType] && formatOptions[fileType].map((option) => (
+                      <MenuItem key={option} value={option} sx={{ backgroundColor: '#1E1E1E', color: '#fff' }}>
+                        {option.toUpperCase()}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
                 <Button sx={styles.convertButton} onClick={handleConvert}>
                   Convert
                 </Button>
               </>
-            )}
+            ) : null}
           </CardContent>
         </Card>
       </Box>
     </BackgroundCard>
   );
-};
+}
 
 const styles = {
   container: {
